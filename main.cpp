@@ -1,52 +1,78 @@
-#include <iostream>
-#include<algorithm>
-
-
+#include<bits/stdc++.h>
 using namespace std;
 
-int main()
+// A node of BFS traversal
+struct node
 {
-    int n , i , j, cnt = 0 ;
-    cin >> n ;
-    unsigned long long int  vis[n] ;
-    bool b[n] ;
+    int val;
+    int level;
+};
 
-    for(i = 0 ; i < n ; i++)
-        cin >> vis[i] ;
 
-    for(i = 0 ; i < n ; i++)
-        b[i] = true;
+int minOperations(int x, int y)
+{
+    // To keep track of visited numbers
+    // in BFS.
+    set<int> visit;
 
-    sort(vis,vis+n) ;
-    i = 0 ;
-    j = 1 ;
-        while(j != n )
-        {
-            if(vis[i]< vis[j] && (b[i] == b[j]) && (b[i] == true))
-            {
-                b[i] = false ;
-                b[j] = false ;
-                i++;
-                j++ ;
-            }
-            else if (vis[i]< vis[j] && (b[j] == false))
-            {
-                j++ ;
-            }
-            else
-            {
-                i++ ;
-                j++ ;
-            }
-        }
-    for(i =0 ; i<n ; i++)
+    // Create a queue and enqueue x into it.
+    queue<node> q;
+    node n = {x, 0};
+    q.push(n);
+
+
+    // Do BFS starting from x
+    while (!q.empty())
     {
-        if(b[i] == true)
+        // Remove an item from queue
+        node t = q.front();
+        q.pop();
+
+        // If the removed item is target
+        // number y, return its level
+        if (t.val == y)
+            return t.level;
+
+        // Mark dequeued number as visited
+        visit.insert(t.val);
+
+        // If we can reach y in one more step
+        if (t.val*2 == y || t.val+1 == y)
+            return t.level+1;
+
+        // Insert children of t if not visited
+        // already
+        if (visit.find(t.val*2) == visit.end())
         {
-            cnt++ ;
+            n.val = t.val*2;
+            n.level = t.level+1;
+            q.push(n);
+        }
+        if (t.val+1>=0 && visit.find(t.val+1) == visit.end())
+        {
+            n.val = t.val+1;
+            n.level = t.level+1;
+            q.push(n);
         }
     }
+}
 
-    cout << cnt << endl ;
+// Driver code
+int main()
+{
+    int t ,  i  ;
+    int a[t] ;
+    for(i = 0 ; i < t ; i++)
+        cin >> a[i] ;
+    i= 0 ;
+    while(t--)
+    {
+        cout << minOperations(1,a[i]);
+        i++ ;
+
+    }
     return 0;
 }
+
+
+
